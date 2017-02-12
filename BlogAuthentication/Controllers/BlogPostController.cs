@@ -39,6 +39,13 @@ namespace BlogAuthentication.Controllers
             return View(blogposts.ToList().OrderByDescending(b => b.Created));
         }
 
+        public ActionResult MyPosts()
+        {
+            string userId = User.Identity.GetUserId();
+            var blogposts = db.BlogPosts.Include(b => b.Owner).Where(b => b.OwnerId == userId);
+            return View(blogposts.ToList().OrderByDescending(b => b.Created));
+        }
+
         // GET: BlogPost/Details/5
         public ActionResult Details(int? id)
         {
@@ -83,12 +90,21 @@ namespace BlogAuthentication.Controllers
         // GET: BlogPost/Edit/5
         public ActionResult Edit(int? id)
         {
+            BlogPost blogPost = db.BlogPosts.Find(id);
+            var userId = User.Identity.GetUserId();
+            var post = db.BlogPosts.SingleOrDefault(m => m.Id == blogPost.Id  && m.OwnerId == userId);
+            if (post == null)
+            {
+                return new HttpNotFoundResult();
+            }
+
+
+
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var blogPost = GetBlogPosts()
-                .FirstOrDefault();
+            
             if (blogPost == null)
             {
                 return HttpNotFound();
@@ -99,10 +115,11 @@ namespace BlogAuthentication.Controllers
         // POST: BlogPost/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Title,Teaser,Body,Public")] BlogPost blogPost)
+        public ActionResult Edit([Bind(Include = "Id,Title,Teaser,Body,Public,Author,Created")] BlogPost blogPost)
         {
             if (ModelState.IsValid)
             {
+                blogPost.Author = User.Identity.GetUserName();
                 blogPost.OwnerId = User.Identity.GetUserId();
                 db.Entry(blogPost).State = EntityState.Modified;
                 db.SaveChanges();
