@@ -14,9 +14,7 @@
     </div>
 </header>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
+
 <table class="table">
     <tr>
         <th>
@@ -27,23 +25,14 @@
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Author)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Created)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Body)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Public)
-        </th>
+        </th>      
         <th></th>
     </tr>
 
 @foreach (var item in Model) {
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.Title)
+            <a href="@Url.Action("Details", "BlogPost", new { id = item.Id })"><span>@Html.DisplayFor(modelItem => item.Title)</span></a>
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Teaser)
@@ -51,15 +40,7 @@
         <td>
             @Html.DisplayFor(modelItem => item.Author)
         </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Created)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Body)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Public)
-        </td>
+
     </tr>
 }
 

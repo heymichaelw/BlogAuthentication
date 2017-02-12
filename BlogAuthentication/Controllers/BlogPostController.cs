@@ -61,6 +61,22 @@ namespace BlogAuthentication.Controllers
             return View(blogPost);
         }
 
+        public ActionResult PersonalDetails(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            BlogPost blogPost = db.BlogPosts.Find(id);
+            if (blogPost == null)
+            {
+                return HttpNotFound();
+            }
+            return View(blogPost);
+        }
+
+
+
         // GET: BlogPost/Create
         public ActionResult Create()
         {
